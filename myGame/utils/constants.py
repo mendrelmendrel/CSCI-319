@@ -1,0 +1,9 @@
+from . import vec
+
+RESOLUTION = vec(400,300)
+SCALE = 2
+UPSCALED = RESOLUTION * SCALE
+
+WORLD_SIZE = vec(800, 600)
+
+EPSILON = 0.01
