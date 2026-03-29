@@ -6,3 +6,8 @@ from .engine import *
 from .enemyKirby import *
 from .waddleDee import WaddleDee
 from .orcEnemy import OrcEnemy
+from .arrow import Arrow
+from .monsterSlime import MonsterSlime
+from .spawnManager import EnemySpawnManager
+from .humanSoldierEnemy import HumanSoldierEnemy
+from .sickleBoss import SickleBoss

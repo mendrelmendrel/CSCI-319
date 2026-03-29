@@ -38,26 +38,32 @@ class SpriteManager(object):
         "kirby.png" : vec(16,16),
         "waddledee.png" : vec(16,16),
         "Soldier.png" : vec(100,100),
-        "Orc.png" : vec(100,100)
+        "Orc.png" : vec(100,100),
+        "Monster_Slime-Sheet.png" : vec(96,96),
+        "Human_Soldier_Sword_Shield-Sheet.png" : vec(96,96),
+        "sickle_sheet.png" : vec(112,64)
 
     }
     
     # A default sprite size
     _DEFAULT_SPRITE = vec(32,32)
     
-    # If images need to be rescaled
+
     _SCALES = {
         "kirby.png" : 2,
         "waddledee.png" : 2,
         "Soldier.png" : 2,
-        "Orc.png" : 2
-        # Can also be tuples, ex: (2,3)
+        "Orc.png" : 2,
+        "Monster_Slime-Sheet.png" : 2,
+        "Human_Soldier_Sword_Shield-Sheet.png" : 2,
+        "sickle_sheet.png" : 2
+      
     }
     
     _DEFAULT_SCALE = 1
     
     # A list of images that require to be loaded with transparency
-    _TRANSPARENCY = ["Soldier.png", "Orc.png"]
+    _TRANSPARENCY = ["Soldier.png", "Orc.png", "Arrow01(32x32).png", "Monster_Slime-Sheet.png", "Human_Soldier_Sword_Shield-Sheet.png", "sickle_sheet.png"]
     
     # A list of images that require to be loaded with a color key
     _COLOR_KEY = ["kirby.png", "waddledee.png"]
@@ -66,7 +72,10 @@ class SpriteManager(object):
     # Use this to trim padding and extract only the character
     _SPRITE_CROPS = {
         "Soldier.png" : Rect(80, 80, 36, 44),
-        "Orc.png" : Rect(88, 84, 44, 30)
+        "Orc.png" : Rect(88, 84, 44, 30),
+        "Monster_Slime-Sheet.png" : Rect(78, 84, 30, 30),
+        "Human_Soldier_Sword_Shield-Sheet.png" : Rect(66, 78, 45, 40),
+        "sickle_sheet.png" : Rect(0, 8, 224, 88)
     }
     
     def __init__(self):

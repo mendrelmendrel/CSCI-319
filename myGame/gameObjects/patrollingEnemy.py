@@ -1,10 +1,15 @@
 from . import Mobile
-from FSMs import WalkingFSM
+from FSMs import WalkingFSM, AttackFSM
 from utils import vec, WORLD_SIZE, normalize, magnitude
 
+import pygame
+
 class PatrollingEnemy(Mobile):
-    def __init__(self, position, minX, maxX, spriteName="kirby.png"):
+    def __init__(self, position, minX, maxX, spriteName="Orc.png"):
         super().__init__(position, spriteName)
+
+        self.maxHp = 2
+        self.hp = self.maxHp
         
         # Path constraints
         self.minX = minX
@@ -20,18 +25,21 @@ class PatrollingEnemy(Mobile):
         self.nFrames = 2
         
         self.nFramesList = {
-            "moving"   : 4,
-            "standing" : 2
+            "moving"   : 8,
+            "standing" : 6,
+            "hurting"     : 4
         }
         
         self.rowList = {
             "moving"   : 1,
-            "standing" : 0
+            "standing" : 0,
+            "hurting"     : 4
         }
         
         self.framesPerSecondList = {
-            "moving"   : 8,
-            "standing" : 2
+            "moving"   : 12,
+            "standing" : 8,
+            "hurting"     : 4
         }
         
         self.frame = 0
@@ -39,7 +47,23 @@ class PatrollingEnemy(Mobile):
         self.row = 0
         
         # Animation FSM
-        self.FSManimated = WalkingFSM(self)
+        self.FSManimated = AttackFSM(self)
+    #returns the full sprite sized rect for collision with player attacks and colllisions
+    def getFullBodyRect(self):
+
+        return pygame.Rect(self.position[0], self.position[1],
+                                    self.getSize()[0], self.getSize()[1])
+    #returns a smaller rect in the center of the sprite for collision with other enemies                               
+    def getCrowdRect(self):
+        full_size = self.getSize()
+        half_width = full_size[0] * 0.5
+        half_height = full_size[1] * 0.5
+        
+        offset_x = (full_size[0] - half_width) / 2
+        offset_y = (full_size[1] - half_height) / 2
+        
+        return pygame.Rect(int(self.position[0] + offset_x), int(self.position[1] + offset_y),
+                          int(half_width), int(half_height))
     
     def update(self, seconds):
         # Track and move toward player if available

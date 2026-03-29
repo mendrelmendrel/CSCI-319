@@ -25,7 +25,7 @@ class MovementFSM(AbstractGameFSM):
     
 
 class AccelerationFSM(MovementFSM):
-    """Axis-based acceleration with gradual stopping."""
+    """Axis-based acceleration with immediate stopping."""
     not_moving = State(initial=True)
     
     negative = State()
@@ -61,11 +61,6 @@ class AccelerationFSM(MovementFSM):
         elif self == "stalemate":
             pass
         else:
-            if self.obj.velocity[self.axis] > self.accel * seconds:
-                self.obj.velocity[self.axis] -= self.accel * seconds
-            elif self.obj.velocity[self.axis] < -self.accel * seconds:
-                self.obj.velocity[self.axis] += self.accel * seconds
-            else:
-                self.obj.velocity[self.axis] = 0
+            self.obj.velocity[self.axis] = 0
         
         super().update(seconds)

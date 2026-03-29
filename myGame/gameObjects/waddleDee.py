@@ -19,3 +19,5 @@ class WaddleDee(PatrollingEnemy):
             "moving"   : 8,
             "standing" : 2
         }
+
+        self.FSManimated.on_enter_state()
