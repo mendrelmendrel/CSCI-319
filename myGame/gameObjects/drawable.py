@@ -5,6 +5,13 @@ import pygame
 class Drawable(object):
     
     CAMERA_OFFSET = vec(0,0)
+    RENDER_SCALE = SCALE
+    RENDER_OFFSET = vec(0,0)
+
+    @classmethod
+    def updateRenderTransform(cls, scale, offset=(0,0)):
+        cls.RENDER_SCALE = scale if scale > 0 else 1
+        cls.RENDER_OFFSET = vec(*offset)
     
     @classmethod
     def updateOffset(cls, trackingObject, worldSize):
@@ -26,7 +33,8 @@ class Drawable(object):
     @classmethod    
     def translateMousePosition(cls, mousePos):
         newPos = vec(*mousePos)
-        newPos /= SCALE
+        newPos -= cls.RENDER_OFFSET
+        newPos /= cls.RENDER_SCALE
         newPos += cls.CAMERA_OFFSET
         
         return newPos

@@ -8,8 +8,9 @@ class ScreenManager:
         self.bodyFont = pygame.font.Font(None, 36)
         self.textColor = (255, 255, 255)
         self.backgroundColor = (0, 0, 0)
-        self.startBackground = self._loadImage("startScreen.jpg")
+        self.startBackground = self._loadImage("start_screen.png") or self._loadImage("startScreen.jpg")
         self.gameOverBackground = self._loadImage("youDied.png") or self._loadImage("youDied.jpg")
+        self.victoryBackground = self._loadImage("gameoverscreenpng") or self._loadImage("GameOverScreen.png")
 
     def _loadImage(self, fileName):
         imagePath = join(dirname(__file__), "..", "images", fileName)
@@ -44,31 +45,62 @@ class ScreenManager:
         clock = pygame.time.Clock()
 
         while True:
-            self._drawCenteredText(screen,
-                                   "Untitled for now",
-                                   "Press Enter to start",
-                                   self.startBackground)
+            if self.startBackground:
+                scaledBackground = pygame.transform.scale(self.startBackground,
+                                                          screen.get_size())
+                screen.blit(scaledBackground, (0, 0))
+            else:
+                screen.fill(self.backgroundColor)
+
+            screenWidth, screenHeight = screen.get_size()
+            titleSurface = self.titleFont.render("Select Difficulty", True,
+                                                 self.textColor)
+            easySurface = self.bodyFont.render("Press E for Easy", True,
+                                               self.textColor)
+            standardSurface = self.bodyFont.render("Press S for Standard", True,
+                                                   self.textColor)
+            quitSurface = self.bodyFont.render("Press Esc to Quit", True,
+                                               self.textColor)
+
+            screen.blit(titleSurface,
+                        titleSurface.get_rect(center=(screenWidth // 2,
+                                                      screenHeight // 2 - 60)))
+            screen.blit(easySurface,
+                        easySurface.get_rect(center=(screenWidth // 2,
+                                                     screenHeight // 2 + 0)))
+            screen.blit(standardSurface,
+                        standardSurface.get_rect(center=(screenWidth // 2,
+                                                         screenHeight // 2 + 40)))
+            screen.blit(quitSurface,
+                        quitSurface.get_rect(center=(screenWidth // 2,
+                                                     screenHeight // 2 + 90)))
+            pygame.display.flip()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return False
+                    return None
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        return True
+                    if event.key == pygame.K_e:
+                        return "easy"
+                    if event.key == pygame.K_s:
+                        return "standard"
                     if event.key == pygame.K_ESCAPE:
-                        return False
+                        return None
 
             clock.tick(60)
 
-    def showGameOverScreen(self, screen):
+    def showGameOverScreen(self, screen, won=False):
         clock = pygame.time.Clock()
         gameOverTextColor = (0, 0, 0)
+        title = "You Win!" if won else "Game Over"
+        prompt = "Press R to restart or Esc to quit"
+        background = self.victoryBackground if won else self.gameOverBackground
 
         while True:
             self._drawCenteredText(screen,
-                                   "Game Over",
-                                   "Press R to restart or Esc to quit",
-                                   self.gameOverBackground,
+                                   title,
+                                   prompt,
+                                   background,
                                    gameOverTextColor)
 
             for event in pygame.event.get():

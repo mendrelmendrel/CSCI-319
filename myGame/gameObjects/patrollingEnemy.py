@@ -1,5 +1,21 @@
+"""PatrollingEnemy - Base class for all standard enemies with patrol/pursuit AI.
+
+The PatrollingEnemy class is the foundation for all non-boss enemy types (Orc, Slime,
+Human Soldier). It provides patrol behavior between min/max bounds, player tracking,
+and basic FSM-driven animation. Subclasses override speed/HP for balance tuning.
+
+Enemy Behavior:
+- Patrol: Moves left/right between minX/maxX bounds at constant speed
+- Boundary Wrapping: Reverses direction on world edge or path limit collision
+- Player Reference: Stores reference to player for combat system integration
+- Animation FSM: Drives state transitions (standing/moving/hurting/attacking)
+
+Hitbox System:
+- getFullBodyRect(): Full sprite collision used for damageable hitbox
+- getCrowdRect(): Smaller centered box for enemy-to-enemy separation only
+"""
 from . import Mobile
-from FSMs import WalkingFSM, AttackFSM
+from FSMs import AttackFSM
 from utils import vec, WORLD_SIZE, normalize, magnitude
 
 import pygame
@@ -48,12 +64,13 @@ class PatrollingEnemy(Mobile):
         
         # Animation FSM
         self.FSManimated = AttackFSM(self)
-    #returns the full sprite sized rect for collision with player attacks and colllisions
+
+    # Full sprite collision used for player attacks and direct body contact.
     def getFullBodyRect(self):
 
         return pygame.Rect(self.position[0], self.position[1],
                                     self.getSize()[0], self.getSize()[1])
-    #returns a smaller rect in the center of the sprite for collision with other enemies                               
+    # Smaller center rect used only for enemy crowd-separation pushes.
     def getCrowdRect(self):
         full_size = self.getSize()
         half_width = full_size[0] * 0.5
@@ -64,9 +81,34 @@ class PatrollingEnemy(Mobile):
         
         return pygame.Rect(int(self.position[0] + offset_x), int(self.position[1] + offset_y),
                           int(half_width), int(half_height))
+
+    def _clampToWorldBounds(self):
+        clamped = False
+
+        if self.position[0] < 0:
+            self.position[0] = 0
+            self.velocity[0] = 0
+            clamped = True
+        elif self.position[0] + self.getSize()[0] > WORLD_SIZE[0]:
+            self.position[0] = WORLD_SIZE[0] - self.getSize()[0]
+            self.velocity[0] = 0
+            clamped = True
+
+        if self.position[1] < 0:
+            self.position[1] = 0
+            self.velocity[1] = 0
+            clamped = True
+        elif self.position[1] + self.getSize()[1] > WORLD_SIZE[1]:
+            self.position[1] = WORLD_SIZE[1] - self.getSize()[1]
+            self.velocity[1] = 0
+            clamped = True
+
+        # Returned for callers that may want to react to boundary contact.
+        return clamped
     
     def update(self, seconds):
-        # Track and move toward player if available
+        # Simple chase AI: steer directly toward player's current position.
+        # (Uses player's position vector, not damage-rect center.)
         if self.player:
             direction = self.player.position - self.position
             direction_length = magnitude(direction)
@@ -79,19 +121,6 @@ class PatrollingEnemy(Mobile):
                 elif direction[0] > 0:
                     self.flipped = False
         
+        # Mobile.update handles animation tick + velocity integration.
         super().update(seconds)
-        
-        # Clamp to world boundaries
-        if self.position[0] < 0:
-            self.position[0] = 0
-            self.velocity[0] = 0
-        elif self.position[0] + self.getSize()[0] > WORLD_SIZE[0]:
-            self.position[0] = WORLD_SIZE[0] - self.getSize()[0]
-            self.velocity[0] = 0
-        
-        if self.position[1] < 0:
-            self.position[1] = 0
-            self.velocity[1] = 0
-        elif self.position[1] + self.getSize()[1] > WORLD_SIZE[1]:
-            self.position[1] = WORLD_SIZE[1] - self.getSize()[1]
-            self.velocity[1] = 0
+        self._clampToWorldBounds()

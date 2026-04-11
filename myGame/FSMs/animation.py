@@ -12,13 +12,17 @@ class AnimateFSM(AbstractGameFSM):
 
     def on_enter_state(self):
         state = self.current_state.id
+        stateKey = self.obj.getAnimationStateKey(state) \
+            if hasattr(self.obj, "getAnimationStateKey") else state
+        sheetName = self.obj.getAnimationSheet(state) \
+            if hasattr(self.obj, "getAnimationSheet") else self.obj.imageName
        
-        self.obj.nFrames = self.obj.nFramesList[state]
+        self.obj.nFrames = self.obj.nFramesList[stateKey]
         self.obj.frame = 0
-        self.obj.row = self.obj.rowList[state]
-        self.obj.framesPerSecond = self.obj.framesPerSecondList[state]
+        self.obj.row = self.obj.rowList[stateKey]
+        self.obj.framesPerSecond = self.obj.framesPerSecondList[stateKey]
         self.obj.animationTimer = 0
-        self.obj.image = SpriteManager.getInstance().getSprite(self.obj.imageName,
+        self.obj.image = SpriteManager.getInstance().getSprite(sheetName,
                                                                    (self.obj.frame, self.obj.row))
          
         

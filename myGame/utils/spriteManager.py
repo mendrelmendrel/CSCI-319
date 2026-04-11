@@ -28,6 +28,12 @@ class SpriteManager(object):
     
     # Folder in which images are stored
     _IMAGE_FOLDER = "images"
+
+    _FILE_ALIASES = {
+        "soldierT.png": "soldiersprite.png",
+        "Soldier.png": "soldiersprite.png",
+        "SoldierSprite.png": "soldiersprite.png",
+    }
     
     
     
@@ -38,10 +44,22 @@ class SpriteManager(object):
         "kirby.png" : vec(16,16),
         "waddledee.png" : vec(16,16),
         "Soldier.png" : vec(100,100),
+        "soldierT.png" : vec(100,100),
+        "soldiersprite.png" : vec(100,100),
+        "Knight.png" : vec(100,100),
         "Orc.png" : vec(100,100),
         "Monster_Slime-Sheet.png" : vec(96,96),
         "Human_Soldier_Sword_Shield-Sheet.png" : vec(96,96),
-        "sickle_sheet.png" : vec(112,64)
+        "sickle_sheet.png" : vec(112,64),
+        "Tilemap_color2.png" : vec(192,192),
+        "Tree1.png" : vec(121,190),
+        "Boulder.png" : vec(17,14),
+        "boulder2.png" : vec(100,100),
+        "bush_1.png" : vec(225,225),
+        "bush2.png" : vec(16,16),
+        "Bush3.png" : vec(16,16),
+        "Bush4.png" : vec(16,16),
+        "heart.rotate.png" : vec(32,32)
 
     }
     
@@ -53,30 +71,112 @@ class SpriteManager(object):
         "kirby.png" : 2,
         "waddledee.png" : 2,
         "Soldier.png" : 2,
+        "soldierT.png" : 2,
+        "soldiersprite.png" : 2,
+        "Knight.png" : 2,
         "Orc.png" : 2,
         "Monster_Slime-Sheet.png" : 2,
         "Human_Soldier_Sword_Shield-Sheet.png" : 2,
-        "sickle_sheet.png" : 2
+        "sickle_sheet.png" : 2,
+        "Tilemap_color2.png" : 1,
+        "Tree1.png" : 1,
+        "Boulder.png" : 1,
+        "boulder2.png" : 1,
+        "bush_1.png" : 0.16,
+        "bush2.png" : 1,
+        "Bush3.png" : 1,
+        "Bush4.png" : 1,
+        "heart.rotate.png" : 1
       
     }
     
     _DEFAULT_SCALE = 1
     
     # A list of images that require to be loaded with transparency
-    _TRANSPARENCY = ["Soldier.png", "Orc.png", "Arrow01(32x32).png", "Monster_Slime-Sheet.png", "Human_Soldier_Sword_Shield-Sheet.png", "sickle_sheet.png"]
+    _TRANSPARENCY = ["Soldier.png", "soldierT.png", "soldiersprite.png", "Knight.png", "Orc.png", "Arrow01(32x32).png", "Monster_Slime-Sheet.png", "Human_Soldier_Sword_Shield-Sheet.png", "sickle_sheet.png", 'Tilemap_color2.png', "heart.rotate.png", "Boulder.png", "boulder2.png", "bush_1.png", "bush2.png", "Bush3.png", "Bush4.png"]
     
     # A list of images that require to be loaded with a color key
-    _COLOR_KEY = ["kirby.png", "waddledee.png"]
+    _COLOR_KEY = ["kirby.png", "waddledee.png", "Tree1.png", "boulder2.png", "bush_1.png"]
     
     # Crop regions within each sprite cell (x, y, width, height) AFTER scaling
     # Use this to trim padding and extract only the character
     _SPRITE_CROPS = {
-        "Soldier.png" : Rect(80, 80, 36, 44),
-        "Orc.png" : Rect(88, 84, 44, 30),
-        "Monster_Slime-Sheet.png" : Rect(78, 84, 30, 30),
-        "Human_Soldier_Sword_Shield-Sheet.png" : Rect(66, 78, 45, 40),
-        "sickle_sheet.png" : Rect(0, 8, 224, 88)
+        "Soldier.png" : Rect(72, 66, 68, 54),
+        "soldierT.png" : Rect(60, 52, 92, 76),
+        "soldiersprite.png" : Rect(60, 52, 92, 76),
+        "Knight.png" : Rect(22, 48, 180, 80),
+        "Orc.png" : Rect(84, 79, 48, 36),
+        "Monster_Slime-Sheet.png" : Rect(70, 82, 44, 44),
+        "Human_Soldier_Sword_Shield-Sheet.png" : Rect(66, 78, 48, 44),
+        "sickle_sheet.png" : Rect(0, 8, 224, 88),
+        "heart.rotate.png" : Rect(3, 3, 27, 27)
     }
+
+    TILEMAP_COLOR2_RECTS = {
+        "PLAIN_GRASS_BLOCK" : (0, 0, 192, 192),
+        "PLAIN_GRASS_STRIP_RIGHT" : (112, 0, 48, 160),
+        "HORIZONTAL_GRASS_PLATFORM" : (0, 160, 112, 80),
+        "SMALL_GRASS_SQUARE" : (112, 160, 48, 80),
+        "LEFT_SLOPE" : (0, 240, 80, 160),
+        "RIGHT_SLOPE" : (112, 240, 48, 160),
+        "TOP_CLIFF_GRASS_LARGE" : (256, 0, 112, 160),
+        "TOP_CLIFF_GRASS_SIDE" : (368, 0, 48, 160),
+        "STONE_WALL_MIDDLE_LARGE" : (256, 160, 112, 160),
+        "STONE_WALL_MIDDLE_SIDE" : (368, 160, 48, 160),
+        "STONE_WALL_BOTTOM_LARGE" : (256, 320, 112, 80),
+        "STONE_WALL_BOTTOM_SIDE" : (368, 320, 48, 80)
+    }
+
+    TREE1_RECTS = {
+        "TREE_1" : (36, 51, 121, 190)
+    }
+
+    TREE1_ANIMATION_RECTS = [
+        (36, 51, 121, 190),
+        (228, 51, 121, 190),
+        (420, 51, 121, 190),
+        (612, 51, 121, 190),
+        (804, 51, 121, 190),
+        (996, 51, 121, 190),
+        (1188, 51, 121, 190),
+        (1380, 51, 121, 190)
+    ]
+
+    def getTilemapColor2Rect(self, tileName):
+        if tileName not in self.TILEMAP_COLOR2_RECTS:
+            raise KeyError(f"Unknown Tilemap_color2 tile name: {tileName}")
+
+        return self.TILEMAP_COLOR2_RECTS[tileName]
+
+    def getTilemapColor2Sprite(self, tileName):
+        rect = self.getTilemapColor2Rect(tileName)
+        return self.getSprite("Tilemap_color2.png", rect)
+
+    def getTree1Rect(self, treeName):
+        if treeName not in self.TREE1_RECTS:
+            raise KeyError(f"Unknown Tree1 sprite name: {treeName}")
+
+        return self.TREE1_RECTS[treeName]
+
+    def getTree1Sprite(self, treeName="TREE_1"):
+        rect = self.getTree1Rect(treeName)
+        return self.getSprite("Tree1.png", rect)
+
+    def getTree1AnimationSprites(self):
+        return [self.getSprite("Tree1.png", rect)
+                for rect in self.TREE1_ANIMATION_RECTS]
+
+    def getHeartRotateSprites(self):
+        fileName = "heart.rotate.png"
+        fullSheet = self.getSprite(fileName)
+        spriteSize = self._SPRITE_SIZES.get(fileName,
+                                            self._DEFAULT_SPRITE) * \
+                     self._SCALES.get(fileName,
+                                      self._DEFAULT_SCALE)
+
+        columns = int(fullSheet.get_width() // spriteSize[0])
+        return [self.getSprite(fileName, (frame, 0))
+                for frame in range(columns)]
     
     def __init__(self):
         """Creation of the SpriteManager, sets up storage for surface.
@@ -91,6 +191,7 @@ class SpriteManager(object):
     
     
     def getSize(self, fileName):
+        fileName = self._resolveFileName(fileName)
         # If this sprite has a crop region, return the cropped size
         if fileName in self._SPRITE_CROPS:
             cropRect = self._SPRITE_CROPS[fileName]
@@ -102,6 +203,7 @@ class SpriteManager(object):
                                              self._DEFAULT_SCALE)
     
     def getSprite(self, fileName, offset=None):
+        fileName = self._resolveFileName(fileName)
         # If this sprite has not already been loaded, load the image from memory
         if fileName not in self._full.keys():
             self._loadImage(fileName, offset)
@@ -130,6 +232,9 @@ class SpriteManager(object):
         
         # Otherwise, return the full image
         return self._full[fileName]
+
+    def _resolveFileName(self, fileName):
+        return self._FILE_ALIASES.get(fileName, fileName)
 
     def _applyColorKey(self, fileName, surface):
         if fileName in self._COLOR_KEY:

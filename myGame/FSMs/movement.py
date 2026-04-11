@@ -48,7 +48,7 @@ class AccelerationFSM(MovementFSM):
         self.axis      = axis
         self.direction = vec(0,0)
         self.direction[self.axis] = 1
-        self.accel = 200
+        self.accel = 400
         
         super().__init__(obj)
 
@@ -59,7 +59,7 @@ class AccelerationFSM(MovementFSM):
             self.obj.velocity -= self.direction * self.accel * seconds
                 
         elif self == "stalemate":
-            pass
+            self.obj.velocity[self.axis] = 0
         else:
             self.obj.velocity[self.axis] = 0
         
